@@ -4,7 +4,9 @@ buildscript {
         mavenCentral()
     }
     dependencies {
-        classpath group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true
+        classpath (group: 'net.minecraftforge.gradle', name: 'ForgeGradle', version: '5.1.+', changing: true) { exclude group: 'org.apache.logging.log4j' }
+        classpath 'org.apache.logging.log4j:log4j-api:2.11.2'
+        classpath 'org.apache.logging.log4j:log4j-core:2.11.2'
     }
 }
 
@@ -78,9 +80,6 @@ minecraft {
 
 sourceSets.main.resources { srcDir 'src/generated/resources' }
 
-repositories {
-}
-
 dependencies {
     minecraft "net.minecraftforge:forge:${minecraft_version}-${forge_version}"
 }
@@ -100,3 +99,16 @@ jar {
 }
 
 jar.finalizedBy('reobfJar')
+
+publishing {
+    publications {
+        mavenJava(MavenPublication) {
+            artifact jar
+        }
+    }
+    repositories {
+        maven {
+            url "file:///${project.projectDir}/mcmodsrepo"
+        }
+    }
+}
